@@ -11,7 +11,7 @@ async function bootstrap() {
   // Tell nestjs to run the validation pipe
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new TransformInterceptor());
-  const port = 4000;
+  const port = process.env.PORT;
 
   await app.listen(port);
   logger.log(`Application listening to port ${port}`);
