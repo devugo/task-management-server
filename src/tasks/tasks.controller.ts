@@ -14,7 +14,6 @@ import { GetUser } from '../auth/get-user.decorator';
 import { User } from '../auth/user.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.do';
-import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
 import { Task } from './task.entity';
 import { TasksService } from './tasks.service';
 import { Logger } from '@nestjs/common';
@@ -61,13 +60,12 @@ export class TasksController {
     return this.tasksService.deleteTask(id, user);
   }
 
-  @Patch('/:id/status')
-  updateTaskStatus(
+  @Patch('/:id')
+  updateTask(
     @Param('id') id: string,
-    @Body() updateTaskStatusDto: UpdateTaskStatusDto,
+    @Body() createTaskDto: CreateTaskDto,
     @GetUser() user: User,
   ): Promise<Task> {
-    const { status } = updateTaskStatusDto;
-    return this.tasksService.updateTaskStatus(id, status, user);
+    return this.tasksService.updateTask(id, createTaskDto, user);
   }
 }

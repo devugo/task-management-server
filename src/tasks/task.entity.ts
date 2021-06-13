@@ -1,7 +1,15 @@
 import { Exclude } from 'class-transformer';
 import { User } from '../auth/user.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { TaskStatus } from './task-status.enum';
+import { Label } from 'src/labels/label.entity';
 
 @Entity()
 export class Task {
@@ -20,4 +28,8 @@ export class Task {
   @ManyToOne((_type) => User, (user) => user.tasks, { eager: false })
   @Exclude({ toPlainOnly: true })
   user: User;
+
+  @ManyToMany(() => Label)
+  @JoinTable()
+  labels: Label[];
 }

@@ -4,7 +4,12 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.do';
 import { TaskStatus } from './task-status.enum';
 import { Task } from './task.entity';
-import { InternalServerErrorException, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
+import { ThrowError } from 'src/helpers/throw-error';
+import { ERROR_CODE } from 'src/constants/error-code';
+import { notFoundErrorMessage } from 'src/helpers/functions/get-error-message';
+
+const notFoundErr = (id: string): string => notFoundErrorMessage('Task', id);
 
 @EntityRepository(Task)
 export class TasksRepository extends Repository<Task> {
@@ -35,7 +40,23 @@ export class TasksRepository extends Repository<Task> {
         }". Filters: ${JSON.stringify(filterDto)}`,
         err.stack,
       );
-      throw new InternalServerErrorException();
+      ThrowError.internalServer();
+    }
+  }
+
+  async getById(id: string, user: User): Promise<Task> {
+    try {
+      const task = await this.findOne({ id, user });
+
+      if (!task) {
+        ThrowError.notFound(notFoundErr(id));
+      }
+      return task;
+    } catch (error) {
+      if (error.code === ERROR_CODE.internal) {
+        ThrowError.notFound(notFoundErr(id));
+      }
+      throw error;
     }
   }
 
@@ -50,5 +71,42 @@ export class TasksRepository extends Repository<Task> {
     await this.save(task);
 
     return task;
+  }
+
+  async deleteTask(id: string, user: User): Promise<void> {
+    try {
+      const task = await this.getById(id, user);
+
+      if (task) {
+        const result = await this.delete(task);
+
+        if (result.affected === 0) {
+          ThrowError.notFound(notFoundErr(id));
+        }
+      }
+    } catch (error) {
+      if (error.code === ERROR_CODE.internal) {
+        ThrowError.notFound(notFoundErr(id));
+      }
+      throw error;
+    }
+  }
+
+  async updateTask(
+    id: string,
+    createTaskDto: CreateTaskDto,
+    user: User,
+  ): Promise<Task> {
+    const { title, description } = createTaskDto;
+    try {
+      const task = await this.getById(id, user);
+      task.title = title;
+      task.description = description;
+      await this.save(task);
+
+      return task;
+    } catch (err) {
+      throw err;
+    }
   }
 }
