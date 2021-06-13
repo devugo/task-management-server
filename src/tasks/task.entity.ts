@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { TaskStatus } from './task-status.enum';
 import { Label } from 'src/labels/label.entity';
+import { Project } from 'src/projects/project.entity';
 
 @Entity()
 export class Task {
@@ -28,6 +29,10 @@ export class Task {
   @ManyToOne((_type) => User, (user) => user.tasks, { eager: false })
   @Exclude({ toPlainOnly: true })
   user: User;
+
+  @ManyToOne((_type) => Project, (project) => project.tasks, { eager: false })
+  @Exclude({ toPlainOnly: true })
+  project: Project;
 
   @ManyToMany(() => Label)
   @JoinTable()

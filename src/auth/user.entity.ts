@@ -1,6 +1,7 @@
 import { Task } from '../tasks/task.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Label } from 'src/labels/label.entity';
+import { Project } from 'src/projects/project.entity';
 
 @Entity()
 export class User {
@@ -18,4 +19,7 @@ export class User {
 
   @OneToMany((_type) => Label, (label) => label.user, { eager: true })
   labels: Label[];
+
+  @OneToMany((_type) => Project, (project) => project.user, { eager: true })
+  projects: Project[];
 }
