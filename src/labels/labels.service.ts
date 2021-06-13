@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/auth/user.entity';
+import { User } from '../auth/user.entity';
 import { CreateLabelDto } from './dto/create-label.dto';
 import { GetLabelsFilterDto } from './dto/get-labels-filter.dto';
 import { Label } from './label.entity';

@@ -9,8 +9,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { TaskStatus } from './task-status.enum';
-import { Label } from 'src/labels/label.entity';
-import { Project } from 'src/projects/project.entity';
+import { Label } from '../labels/label.entity';
+import { Project } from '../projects/project.entity';
+import { Level } from '../levels/level.entity';
 
 @Entity()
 export class Task {
@@ -33,6 +34,10 @@ export class Task {
   @ManyToOne((_type) => Project, (project) => project.tasks, { eager: false })
   @Exclude({ toPlainOnly: true })
   project: Project;
+
+  @ManyToOne((_type) => Level, (level) => level.tasks, { eager: false })
+  @Exclude({ toPlainOnly: true })
+  level: Level;
 
   @ManyToMany(() => Label)
   @JoinTable()

@@ -1,7 +1,7 @@
 import { Task } from '../tasks/task.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Label } from 'src/labels/label.entity';
-import { Project } from 'src/projects/project.entity';
+import { Label } from '../labels/label.entity';
+import { Project } from '../projects/project.entity';
 
 @Entity()
 export class User {

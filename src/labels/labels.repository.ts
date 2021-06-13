@@ -1,8 +1,8 @@
 import { Logger } from '@nestjs/common';
-import { User } from 'src/auth/user.entity';
-import { ERROR_CODE } from 'src/constants/error-code';
-import { notFoundErrorMessage } from 'src/helpers/functions/get-error-message';
-import { ThrowError } from 'src/helpers/throw-error';
+import { User } from '../auth/user.entity';
+import { ERROR_CODE } from '../constants/error-code';
+import { notFoundErrorMessage } from '../helpers/classes/get-error-message';
+import { ThrowError } from '../helpers/throw-error';
 import { EntityRepository, Repository } from 'typeorm';
 import { CreateLabelDto } from './dto/create-label.dto';
 import { GetLabelsFilterDto } from './dto/get-labels-filter.dto';

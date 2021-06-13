@@ -4,9 +4,9 @@ import { EntityRepository, Repository } from 'typeorm';
 import { GetProjectsFilterDto } from './dto/get-projects-filter.dto';
 import { Project } from './project.entity';
 import { User } from '../auth/user.entity';
-import { ERROR_CODE } from 'src/constants/error-code';
+import { ERROR_CODE } from '../constants/error-code';
 import { CreateProjectDto } from './dto/create-project.dto';
-import { notFoundErrorMessage } from 'src/helpers/functions/get-error-message';
+import { notFoundErrorMessage } from '../helpers/classes/get-error-message';
 
 const notFoundErr = (id: string): string => notFoundErrorMessage('Label', id);
 

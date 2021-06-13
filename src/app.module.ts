@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configValidationSchema } from './config.schema';
 import { LabelsModule } from './labels/labels.module';
 import { ProjectsModule } from './projects/projects.module';
+import { LevelsModule } from './levels/levels.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { ProjectsModule } from './projects/projects.module';
     AuthModule,
     LabelsModule,
     ProjectsModule,
+    LevelsModule,
   ],
 })
 export class AppModule {}

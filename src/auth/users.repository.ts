@@ -2,8 +2,8 @@ import { EntityRepository, Repository } from 'typeorm';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
-import { ERROR_CODE } from 'src/constants/error-code';
-import { ThrowError } from 'src/helpers/throw-error';
+import { ERROR_CODE } from '../constants/error-code';
+import { ThrowError } from '../helpers/throw-error';
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {

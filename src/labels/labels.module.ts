@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from 'src/auth/auth.module';
+import { AuthModule } from '../auth/auth.module';
 import { LabelsController } from './labels.controller';
 import { LabelsRepository } from './labels.repository';
 import { LabelsService } from './labels.service';

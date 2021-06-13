@@ -5,9 +5,9 @@ import { GetTasksFilterDto } from './dto/get-tasks-filter.do';
 import { TaskStatus } from './task-status.enum';
 import { Task } from './task.entity';
 import { Logger } from '@nestjs/common';
-import { ThrowError } from 'src/helpers/throw-error';
-import { ERROR_CODE } from 'src/constants/error-code';
-import { notFoundErrorMessage } from 'src/helpers/functions/get-error-message';
+import { ThrowError } from '../helpers/throw-error';
+import { ERROR_CODE } from '../constants/error-code';
+import { notFoundErrorMessage } from '../helpers/classes/get-error-message';
 
 const notFoundErr = (id: string): string => notFoundErrorMessage('Task', id);
 
