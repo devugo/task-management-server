@@ -8,12 +8,12 @@ import { ThrowError } from '../helpers/throw-error';
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
   async createUser(authCredentialsDto: AuthCredentialsDto): Promise<void> {
-    const { username, password } = authCredentialsDto;
+    const { username, email, password } = authCredentialsDto;
 
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(password, salt);
 
-    const user = this.create({ username, password: hashPassword });
+    const user = this.create({ username, email, password: hashPassword });
 
     try {
       await this.save(user);
