@@ -19,7 +19,7 @@ export class UsersRepository extends Repository<User> {
       await this.save(user);
     } catch (err) {
       if (err.code === ERROR_CODE.conflict) {
-        ThrowError.conflict('Username already exists');
+        ThrowError.conflict('User already exists');
       } else {
         ThrowError.internalServer();
       }
