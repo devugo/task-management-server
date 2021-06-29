@@ -39,7 +39,7 @@ export class LabelsController {
 
   @Get('/:id')
   getTask(@Param('id') id: string, @GetUser() user: User): Promise<Label> {
-    return this.labelsService.getLabel(id, user);
+    return this.labelsService.getLabelById(id, user);
   }
 
   @Post()

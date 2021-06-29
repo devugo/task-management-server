@@ -30,6 +30,10 @@ export class TasksRepository extends Repository<Task> {
       );
     }
 
+    query.leftJoinAndSelect('task.level', 'level');
+    query.leftJoinAndSelect('task.project', 'project');
+    query.leftJoinAndSelect('task.labels', 'label');
+
     try {
       const tasks = await query.getMany();
       return tasks;
@@ -60,11 +64,17 @@ export class TasksRepository extends Repository<Task> {
     }
   }
 
-  async createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
-    const { title, description } = createTaskDto;
+  async createTask(createTaskDto: any, user: User): Promise<Task> {
+    const { title, description, level, project, labels } = createTaskDto;
+    console.log(labels);
+    // const task = this.create(createTaskDto);
+
     const task = this.create({
       title,
       description,
+      level,
+      project,
+      labels,
       status: TaskStatus.OPEN,
       user,
     });

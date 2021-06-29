@@ -17,7 +17,7 @@ export class ProjectsService {
     return this.projectsRepository.getProjects(filterDto, user);
   }
 
-  getProject(id: string, user: User): Promise<Project> {
+  getProjectById(id: string, user: User): Promise<Project> {
     return this.projectsRepository.getById(id, user);
   }
 

@@ -39,7 +39,7 @@ export class ProjectsController {
 
   @Get('/:id')
   getProject(@Param('id') id: string, @GetUser() user: User): Promise<Project> {
-    return this.projectsService.getProject(id, user);
+    return this.projectsService.getProjectById(id, user);
   }
 
   @Post()

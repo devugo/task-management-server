@@ -13,4 +13,8 @@ export class LevelsService {
   getLevels(): Promise<Level[]> {
     return this.levelsRepository.getLevels();
   }
+
+  async getLevelById(id: string): Promise<Level> {
+    return this.levelsRepository.getById(id);
+  }
 }

@@ -1,5 +1,7 @@
-GET http://localhost:4000/tasks
+POST http://localhost:4000/auth/signup
 
-################################
-
-GET
+{
+  "email": "ugoezenwankwo@gmail.com",
+  "password": "password",
+  "username": "devugo"
+}

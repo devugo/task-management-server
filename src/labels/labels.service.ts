@@ -17,7 +17,7 @@ export class LabelsService {
     return this.labelsRepository.getLabels(filterDto, user);
   }
 
-  getLabel(id: string, user: User): Promise<Label> {
+  getLabelById(id: string, user: User): Promise<Label> {
     return this.labelsRepository.getById(id, user);
   }
 

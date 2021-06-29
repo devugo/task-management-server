@@ -32,11 +32,9 @@ export class Task {
   user: User;
 
   @ManyToOne((_type) => Project, (project) => project.tasks, { eager: false })
-  @Exclude({ toPlainOnly: true })
   project: Project;
 
   @ManyToOne((_type) => Level, (level) => level.tasks, { eager: false })
-  @Exclude({ toPlainOnly: true })
   level: Level;
 
   @ManyToMany(() => Label)

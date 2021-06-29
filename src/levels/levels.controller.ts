@@ -1,4 +1,4 @@
-import { Controller, Get, Logger, Query } from '@nestjs/common';
+import { Controller, Get, Logger, Param } from '@nestjs/common';
 import { Level } from './level.entity';
 import { LevelsService } from './levels.service';
 
@@ -11,5 +11,10 @@ export class LevelsController {
   getLevels(): Promise<Level[]> {
     this.logger.verbose(`Retrieving levels`);
     return this.levelsService.getLevels();
+  }
+
+  @Get('/:id')
+  getLevelById(@Param('id') id: string): Promise<Level> {
+    return this.levelsService.getLevelById(id);
   }
 }
