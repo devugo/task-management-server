@@ -10,6 +10,9 @@ export class Level {
   @Column()
   title: string;
 
+  @Column({ nullable: true })
+  color: string;
+
   @OneToMany((_type) => Task, (task) => task.level, { eager: true })
   @Exclude({ toPlainOnly: true })
   tasks: Task[];
