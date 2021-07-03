@@ -50,21 +50,30 @@ export class TasksService {
       }
     }
 
-    const labelsArray = JSON.parse(labels as string);
-    if (labelsArray.length > 0) {
-      const labelsExist = [];
-      for (let i = 0; i < labelsArray.length; i++) {
-        const label = labelsArray[i];
-        const exist = await this.labelsService.getLabelById(
-          label as string,
-          user,
-        );
-
-        if (exist) {
-          labelsExist.push(exist);
-        }
+    if (labels) {
+      let labelsArray;
+      // Parse to array if in string format.
+      if (typeof labels === 'string') {
+        labelsArray = JSON.parse(labels as string);
+      } else {
+        labelsArray = labels;
       }
-      sendData.labels = labelsExist;
+
+      if (labelsArray.length > 0) {
+        const labelsExist = [];
+        for (let i = 0; i < labelsArray.length; i++) {
+          const label = labelsArray[i];
+          const exist = await this.labelsService.getLabelById(
+            label as string,
+            user,
+          );
+
+          if (exist) {
+            labelsExist.push(exist);
+          }
+        }
+        sendData.labels = labelsExist;
+      }
     }
 
     return this.tasksRepository.createTask(sendData, user);

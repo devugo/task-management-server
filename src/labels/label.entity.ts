@@ -3,10 +3,12 @@ import { User } from '../auth/user.entity';
 import { Task } from '../tasks/task.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -19,6 +21,12 @@ export class Label {
 
   @Column()
   color: string;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 
   @ManyToOne((_type) => User, (user) => user.labels, { eager: false })
   @Exclude({ toPlainOnly: true })

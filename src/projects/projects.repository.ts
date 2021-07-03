@@ -33,6 +33,8 @@ export class ProjectsRepository extends Repository<Project> {
       });
     }
 
+    query.orderBy('project.created_at', 'DESC');
+
     try {
       const projects = await query.getMany();
       return projects;

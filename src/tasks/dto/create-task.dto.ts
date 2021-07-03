@@ -7,15 +7,15 @@ export class CreateTaskDto {
   @IsNotEmpty()
   title: string;
 
-  @IsNotEmpty()
-  description: string;
+  @IsOptional()
+  description?: string;
 
   @IsOptional()
-  labels: string | Label[];
+  labels?: string | Label[];
 
   @IsOptional()
-  project: string | Project;
+  project?: string | Project;
 
   @IsOptional()
-  level: string | Level;
+  level?: string | Level;
 }

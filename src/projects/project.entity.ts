@@ -3,10 +3,12 @@ import { User } from '../auth/user.entity';
 import { Task } from '../tasks/task.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -22,6 +24,12 @@ export class Project {
 
   @Column()
   color: string;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 
   @OneToMany((_type) => Task, (task) => task.project, { eager: true })
   tasks: Task[];

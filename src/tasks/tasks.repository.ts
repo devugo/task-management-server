@@ -15,9 +15,13 @@ const notFoundErr = (id: string): string => notFoundErrorMessage('Task', id);
 export class TasksRepository extends Repository<Task> {
   private logger = new Logger('TasksRepository', true);
   async getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
-    const { status, search } = filterDto;
+    const { status, search, start, end } = filterDto;
     const query = this.createQueryBuilder('task');
     query.where({ user });
+
+    if (start && end) {
+      query.andWhere('task.created_at BETWEEN :start AND :end', { start, end });
+    }
 
     if (status) {
       query.andWhere('task.status = :status', { status });
@@ -33,6 +37,7 @@ export class TasksRepository extends Repository<Task> {
     query.leftJoinAndSelect('task.level', 'level');
     query.leftJoinAndSelect('task.project', 'project');
     query.leftJoinAndSelect('task.labels', 'label');
+    query.orderBy('task.created_at', 'DESC');
 
     try {
       const tasks = await query.getMany();
@@ -66,7 +71,7 @@ export class TasksRepository extends Repository<Task> {
 
   async createTask(createTaskDto: any, user: User): Promise<Task> {
     const { title, description, level, project, labels } = createTaskDto;
-    console.log(labels);
+    console.log(createTaskDto);
     // const task = this.create(createTaskDto);
 
     const task = this.create({

@@ -24,6 +24,7 @@ export class LabelsRepository extends Repository<Label> {
     if (color) {
       query.andWhere('LOWER(label.color) = LOWER(:color)', { color });
     }
+    query.orderBy('label.created_at', 'DESC');
 
     try {
       const labels = await query.getMany();
