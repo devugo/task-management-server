@@ -91,11 +91,7 @@ export class TasksRepository extends Repository<Task> {
       const task = await this.getById(id, user);
 
       if (task) {
-        const result = await this.delete(task);
-
-        if (result.affected === 0) {
-          ThrowError.notFound(notFoundErr(id));
-        }
+        await this.remove(task);
       }
     } catch (error) {
       if (error.code === ERROR_CODE.internal) {
