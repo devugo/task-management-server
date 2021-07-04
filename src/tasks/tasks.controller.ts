@@ -48,7 +48,7 @@ export class TasksController {
     @GetUser() user: User,
   ): Promise<Task> {
     this.logger.verbose(
-      `User "${user.username}" creating anew task, Data: ${JSON.stringify(
+      `User "${user.username}" creating a new task, Data: ${JSON.stringify(
         createTaskDto,
       )}`,
     );
@@ -66,6 +66,13 @@ export class TasksController {
     @Body() createTaskDto: CreateTaskDto,
     @GetUser() user: User,
   ): Promise<Task> {
+    this.logger.verbose(
+      `User "${
+        user.username
+      }" updating a task with id: ${id}, Data: ${JSON.stringify(
+        createTaskDto,
+      )}`,
+    );
     return this.tasksService.updateTask(id, createTaskDto, user);
   }
 }

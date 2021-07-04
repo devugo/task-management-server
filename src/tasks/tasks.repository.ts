@@ -71,8 +71,6 @@ export class TasksRepository extends Repository<Task> {
 
   async createTask(createTaskDto: any, user: User): Promise<Task> {
     const { title, description, level, project, labels } = createTaskDto;
-    console.log(createTaskDto);
-    // const task = this.create(createTaskDto);
 
     const task = this.create({
       title,
@@ -107,16 +105,15 @@ export class TasksRepository extends Repository<Task> {
     }
   }
 
-  async updateTask(
-    id: string,
-    createTaskDto: CreateTaskDto,
-    user: User,
-  ): Promise<Task> {
-    const { title, description } = createTaskDto;
+  async updateTask(id: string, createTaskDto: any, user: User): Promise<Task> {
+    const { title, description, level, project, labels } = createTaskDto;
     try {
       const task = await this.getById(id, user);
       task.title = title;
       task.description = description;
+      task.level = level;
+      task.project = project;
+      task.labels = labels;
       await this.save(task);
 
       return task;
