@@ -8,6 +8,7 @@ import { Logger } from '@nestjs/common';
 import { ThrowError } from '../helpers/throw-error';
 import { ERROR_CODE } from '../constants/error-code';
 import { notFoundErrorMessage } from '../helpers/classes/get-error-message';
+import { UpdateTaskStatusDto } from './dto/update-task-status-dto';
 
 const notFoundErr = (id: string): string => notFoundErrorMessage('Task', id);
 
@@ -110,6 +111,24 @@ export class TasksRepository extends Repository<Task> {
       task.level = level;
       task.project = project;
       task.labels = labels;
+      await this.save(task);
+
+      return task;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateTaskStatus(
+    id: string,
+    updateTaskStatusDto: UpdateTaskStatusDto,
+    user: User,
+  ): Promise<Task> {
+    const { status } = updateTaskStatusDto;
+
+    try {
+      const task = await this.getById(id, user);
+      task.status = status;
       await this.save(task);
 
       return task;

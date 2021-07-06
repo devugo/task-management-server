@@ -17,6 +17,7 @@ import { GetTasksFilterDto } from './dto/get-tasks-filter.do';
 import { Task } from './task.entity';
 import { TasksService } from './tasks.service';
 import { Logger } from '@nestjs/common';
+import { UpdateTaskStatusDto } from './dto/update-task-status-dto';
 
 @Controller('tasks')
 @UseGuards(AuthGuard())
@@ -74,5 +75,21 @@ export class TasksController {
       )}`,
     );
     return this.tasksService.updateTask(id, createTaskDto, user);
+  }
+
+  @Patch('/:id/update-status')
+  updateTaskStatus(
+    @Param('id') id: string,
+    @Body() updateTaskStatusDto: UpdateTaskStatusDto,
+    @GetUser() user: User,
+  ): Promise<Task> {
+    this.logger.verbose(
+      `User "${
+        user.username
+      }" updating a task status with id: ${id}, Data: ${JSON.stringify(
+        updateTaskStatusDto,
+      )}`,
+    );
+    return this.tasksService.updateTaskStatus(id, updateTaskStatusDto, user);
   }
 }

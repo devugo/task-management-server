@@ -8,6 +8,7 @@ import { User } from '../auth/user.entity';
 import { LevelsService } from 'src/levels/levels.service';
 import { ProjectsService } from 'src/projects/projects.service';
 import { LabelsService } from 'src/labels/labels.service';
+import { UpdateTaskStatusDto } from './dto/update-task-status-dto';
 
 @Injectable()
 export class TasksService {
@@ -136,5 +137,13 @@ export class TasksService {
     }
 
     return this.tasksRepository.updateTask(id, sendData, user);
+  }
+
+  async updateTaskStatus(
+    id: string,
+    updateTaskStatusDto: UpdateTaskStatusDto,
+    user: User,
+  ): Promise<Task> {
+    return this.tasksRepository.updateTaskStatus(id, updateTaskStatusDto, user);
   }
 }
