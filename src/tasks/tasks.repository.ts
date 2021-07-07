@@ -9,6 +9,7 @@ import { ThrowError } from '../helpers/throw-error';
 import { ERROR_CODE } from '../constants/error-code';
 import { notFoundErrorMessage } from '../helpers/classes/get-error-message';
 import { UpdateTaskStatusDto } from './dto/update-task-status-dto';
+import { RescheduleTaskDto } from './dto/reschedule-task-dto';
 
 const notFoundErr = (id: string): string => notFoundErrorMessage('Task', id);
 
@@ -105,7 +106,6 @@ export class TasksRepository extends Repository<Task> {
 
   async updateTask(id: string, createTaskDto: any, user: User): Promise<Task> {
     const { title, description, level, project, labels, date } = createTaskDto;
-    console.log('Update date', date);
     try {
       const task = await this.getById(id, user);
       task.title = title;
@@ -132,6 +132,24 @@ export class TasksRepository extends Repository<Task> {
     try {
       const task = await this.getById(id, user);
       task.status = status;
+      await this.save(task);
+
+      return task;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async rescheduleTask(
+    id: string,
+    rescheduleTaskDto: RescheduleTaskDto,
+    user: User,
+  ): Promise<Task> {
+    const { date } = rescheduleTaskDto;
+
+    try {
+      const task = await this.getById(id, user);
+      task.date = date;
       await this.save(task);
 
       return task;

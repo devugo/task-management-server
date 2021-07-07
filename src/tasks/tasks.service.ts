@@ -9,6 +9,7 @@ import { LevelsService } from 'src/levels/levels.service';
 import { ProjectsService } from 'src/projects/projects.service';
 import { LabelsService } from 'src/labels/labels.service';
 import { UpdateTaskStatusDto } from './dto/update-task-status-dto';
+import { RescheduleTaskDto } from './dto/reschedule-task-dto';
 
 @Injectable()
 export class TasksService {
@@ -145,5 +146,13 @@ export class TasksService {
     user: User,
   ): Promise<Task> {
     return this.tasksRepository.updateTaskStatus(id, updateTaskStatusDto, user);
+  }
+
+  async rescheduleTask(
+    id: string,
+    rescheduleTaskDto: RescheduleTaskDto,
+    user: User,
+  ): Promise<Task> {
+    return this.tasksRepository.rescheduleTask(id, rescheduleTaskDto, user);
   }
 }

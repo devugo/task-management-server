@@ -18,6 +18,7 @@ import { Task } from './task.entity';
 import { TasksService } from './tasks.service';
 import { Logger } from '@nestjs/common';
 import { UpdateTaskStatusDto } from './dto/update-task-status-dto';
+import { RescheduleTaskDto } from './dto/reschedule-task-dto';
 
 @Controller('tasks')
 @UseGuards(AuthGuard())
@@ -77,7 +78,7 @@ export class TasksController {
     return this.tasksService.updateTask(id, createTaskDto, user);
   }
 
-  @Patch('/:id/update-status')
+  @Patch('/:id/status')
   updateTaskStatus(
     @Param('id') id: string,
     @Body() updateTaskStatusDto: UpdateTaskStatusDto,
@@ -91,5 +92,21 @@ export class TasksController {
       )}`,
     );
     return this.tasksService.updateTaskStatus(id, updateTaskStatusDto, user);
+  }
+
+  @Patch('/:id/reschedule')
+  rescheduleTask(
+    @Param('id') id: string,
+    @Body() rescheduleTaskDto: RescheduleTaskDto,
+    @GetUser() user: User,
+  ): Promise<Task> {
+    this.logger.verbose(
+      `User "${
+        user.username
+      }" is rescheduling a task with id: ${id}, Data: ${JSON.stringify(
+        rescheduleTaskDto,
+      )}`,
+    );
+    return this.tasksService.rescheduleTask(id, rescheduleTaskDto, user);
   }
 }
