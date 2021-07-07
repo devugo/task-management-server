@@ -29,8 +29,8 @@ export class TasksService {
   }
 
   async createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
-    const { title, description, level, project, labels } = createTaskDto;
-    const sendData = { title, description } as CreateTaskDto;
+    const { title, description, date, level, project, labels } = createTaskDto;
+    const sendData = { title, description, date } as CreateTaskDto;
 
     if (level) {
       const exist = await this.levelsService.getLevelById(level as string);
@@ -89,8 +89,8 @@ export class TasksService {
     createTaskDto: CreateTaskDto,
     user: User,
   ): Promise<Task> {
-    const { title, description, level, project, labels } = createTaskDto;
-    const sendData = { title, description } as CreateTaskDto;
+    const { title, description, date, level, project, labels } = createTaskDto;
+    const sendData = { title, description, date } as CreateTaskDto;
     if (level) {
       const exist = await this.levelsService.getLevelById(level as string);
 

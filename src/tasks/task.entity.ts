@@ -29,6 +29,9 @@ export class Task {
   @Column()
   status: TaskStatus;
 
+  @Column()
+  date: Date;
+
   @CreateDateColumn()
   created_at: Date;
 
