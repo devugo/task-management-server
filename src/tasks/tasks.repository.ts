@@ -1,5 +1,12 @@
 import { User } from '../auth/user.entity';
-import { EntityRepository, Repository } from 'typeorm';
+import {
+  EntityRepository,
+  LessThan,
+  LessThanOrEqual,
+  MoreThan,
+  MoreThanOrEqual,
+  Repository,
+} from 'typeorm';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.do';
 import { TaskStatus } from './task-status.enum';
@@ -10,17 +17,23 @@ import { ERROR_CODE } from '../constants/error-code';
 import { notFoundErrorMessage } from '../helpers/classes/get-error-message';
 import { UpdateTaskStatusDto } from './dto/update-task-status-dto';
 import { RescheduleTaskDto } from './dto/reschedule-task-dto';
+const moment = require('moment');
 
 const notFoundErr = (id: string): string => notFoundErrorMessage('Task', id);
+
+const nowDate = moment(new Date()).format('YYYY-MM-DD');
 
 @EntityRepository(Task)
 export class TasksRepository extends Repository<Task> {
   private logger = new Logger('TasksRepository', true);
-  async getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
+  async getTasks(
+    type: string,
+    filterDto: GetTasksFilterDto,
+    user: User,
+  ): Promise<Task[]> {
     const { status, search, start, end } = filterDto;
     const query = this.createQueryBuilder('task');
     query.where({ user });
-    console.log(start);
 
     if (start && end) {
       query.andWhere('task.created_at BETWEEN :start AND :end', {
@@ -31,6 +44,30 @@ export class TasksRepository extends Repository<Task> {
 
     if (status) {
       query.andWhere('task.status = :status', { status });
+    }
+
+    if (type === 'today') {
+      query.andWhere('(task.date >= :start AND task.date <= :end)', {
+        start: `${nowDate} 00:00:00`,
+        end: `${nowDate} 23:59:59`,
+      });
+    }
+
+    if (type === 'overdue') {
+      query.andWhere(
+        '(task.date < :date AND (task.status = :status1 OR task.status = :status2))',
+        {
+          date: `${nowDate} 00:00:00`,
+          status1: 'IN_PROGRESS',
+          status2: 'OPEN',
+        },
+      );
+    }
+
+    if (type === 'upcoming') {
+      query.andWhere('task.date > :date', {
+        date: `${nowDate} 23:59:59`,
+      });
     }
 
     if (search) {

@@ -26,17 +26,18 @@ export class TasksController {
   private logger = new Logger('TasksController');
   constructor(private tasksService: TasksService) {}
 
-  @Get()
+  @Get('/:type?')
   getTasks(
+    @Param('type') type: string,
     @Query() filterDto: GetTasksFilterDto,
     @GetUser() user: User,
   ): Promise<Task[]> {
     this.logger.verbose(
       `User "${user.username}" retrieving all tasks. Filters: ${JSON.stringify(
         filterDto,
-      )}`,
+      )} and type: ${type}`,
     );
-    return this.tasksService.getTasks(filterDto, user);
+    return this.tasksService.getTasks(type, filterDto, user);
   }
 
   @Get('/:id')
