@@ -31,7 +31,7 @@ export class TasksRepository extends Repository<Task> {
     filterDto: GetTasksFilterDto,
     user: User,
   ): Promise<Task[]> {
-    const { status, search, start, end } = filterDto;
+    const { status, search, start, end, project, level, label } = filterDto;
     const query = this.createQueryBuilder('task');
     query.where({ user });
 
@@ -50,6 +50,18 @@ export class TasksRepository extends Repository<Task> {
       query.andWhere('(task.date >= :start AND task.date <= :end)', {
         start: `${nowDate} 00:00:00`,
         end: `${nowDate} 23:59:59`,
+      });
+    }
+
+    if (project) {
+      query.andWhere('task.projectId = :project', {
+        project,
+      });
+    }
+
+    if (level) {
+      query.andWhere('task.levelId = :level', {
+        level,
       });
     }
 

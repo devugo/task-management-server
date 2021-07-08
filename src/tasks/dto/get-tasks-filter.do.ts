@@ -17,4 +17,16 @@ export class GetTasksFilterDto {
   @IsOptional()
   @IsString()
   end?: string;
+
+  @IsOptional()
+  @IsString()
+  project?: string;
+
+  @IsOptional()
+  @IsString()
+  label?: string;
+
+  @IsOptional()
+  @IsString()
+  level?: string;
 }
