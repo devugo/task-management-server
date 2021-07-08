@@ -20,9 +20,13 @@ export class TasksRepository extends Repository<Task> {
     const { status, search, start, end } = filterDto;
     const query = this.createQueryBuilder('task');
     query.where({ user });
+    console.log(start);
 
     if (start && end) {
-      query.andWhere('task.created_at BETWEEN :start AND :end', { start, end });
+      query.andWhere('task.created_at BETWEEN :start AND :end', {
+        start,
+        end: `${end} 23:59:59`,
+      });
     }
 
     if (status) {
