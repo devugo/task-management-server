@@ -65,6 +65,14 @@ export class TasksRepository extends Repository<Task> {
       });
     }
 
+    if (label) {
+      query
+        .innerJoinAndSelect('task.labels', 'label')
+        .andWhere('task_label.labelId = :label', { label });
+    } else {
+      query.leftJoinAndSelect('task.labels', 'label');
+    }
+
     if (type === 'overdue') {
       query.andWhere(
         '(task.date < :date AND (task.status = :status1 OR task.status = :status2))',
@@ -91,7 +99,6 @@ export class TasksRepository extends Repository<Task> {
 
     query.leftJoinAndSelect('task.level', 'level');
     query.leftJoinAndSelect('task.project', 'project');
-    query.leftJoinAndSelect('task.labels', 'label');
     query.orderBy('task.created_at', 'DESC');
 
     try {
