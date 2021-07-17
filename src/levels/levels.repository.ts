@@ -12,7 +12,9 @@ export class LevelsRepository extends Repository<Level> {
   private logger = new Logger('LevelsRepository', true);
   async getLevels(): Promise<Level[]> {
     try {
-      const levels = this.find();
+      const query = this.createQueryBuilder('level');
+      query.orderBy('level.title', 'DESC');
+      const levels = await query.getMany();
       return levels;
     } catch (error) {
       this.logger.error(`Failed to get levels`, error.stack);
