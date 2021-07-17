@@ -32,6 +32,6 @@ export class Label {
   @Exclude({ toPlainOnly: true })
   user: User;
 
-  @ManyToMany(() => Task)
+  @ManyToMany(() => Task, (task) => task.labels)
   tasks: Task[];
 }

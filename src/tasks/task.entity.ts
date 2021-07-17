@@ -42,13 +42,19 @@ export class Task {
   @Exclude({ toPlainOnly: true })
   user: User;
 
-  @ManyToOne((_type) => Project, (project) => project.tasks, { eager: false })
+  @ManyToOne((_type) => Project, (project) => project.tasks, {
+    eager: false,
+    onDelete: 'CASCADE',
+  })
   project: Project;
 
-  @ManyToOne((_type) => Level, (level) => level.tasks, { eager: false })
+  @ManyToOne((_type) => Level, (level) => level.tasks, {
+    eager: false,
+    cascade: true,
+  })
   level: Level;
 
-  @ManyToMany(() => Label)
+  @ManyToMany(() => Label, (label) => label.tasks)
   @JoinTable()
   labels: Label[];
 }

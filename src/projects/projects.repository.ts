@@ -82,10 +82,13 @@ export class ProjectsRepository extends Repository<Project> {
       const project = await this.getById(id, user);
 
       if (project) {
-        const result = await this.delete(project);
-
-        if (result.affected === 0) {
-          ThrowError.notFound(notFoundErr(id));
+        try {
+          await this.remove(project);
+        } catch (error) {
+          if (error.code === ERROR_CODE.internal) {
+            ThrowError.notFound(notFoundErr(id));
+          }
+          throw error;
         }
       }
     } catch (error) {

@@ -42,7 +42,10 @@ export class LabelsRepository extends Repository<Label> {
 
   async getById(id: string, user: User): Promise<Label> {
     try {
-      const label = await this.findOne({ id, user });
+      const label = await this.findOne({
+        relations: ['tasks'],
+        where: { id, user },
+      });
 
       if (!label) {
         ThrowError.notFound(notFoundErr(id));
@@ -73,10 +76,15 @@ export class LabelsRepository extends Repository<Label> {
       const label = await this.getById(id, user);
 
       if (label) {
-        const result = await this.delete(label);
-
-        if (result.affected === 0) {
-          ThrowError.notFound(notFoundErr(id));
+        label.tasks = [];
+        this.save(label);
+        try {
+          await this.remove(label);
+        } catch (error) {
+          if (error.code === ERROR_CODE.internal) {
+            ThrowError.notFound(notFoundErr(id));
+          }
+          throw error;
         }
       }
     } catch (error) {
