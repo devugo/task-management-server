@@ -1,13 +1,5 @@
 import { User } from '../auth/user.entity';
-import {
-  EntityRepository,
-  LessThan,
-  LessThanOrEqual,
-  MoreThan,
-  MoreThanOrEqual,
-  Repository,
-} from 'typeorm';
-import { CreateTaskDto } from './dto/create-task.dto';
+import { EntityRepository, Repository } from 'typeorm';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.do';
 import { TaskStatus } from './task-status.enum';
 import { Task } from './task.entity';
@@ -18,6 +10,7 @@ import { notFoundErrorMessage } from '../helpers/classes/get-error-message';
 import { UpdateTaskStatusDto } from './dto/update-task-status-dto';
 import { RescheduleTaskDto } from './dto/reschedule-task-dto';
 import { PAGINATION } from 'src/constants/pagination';
+import { GetTasksSummaryDto } from './dto/get-tasks-summary.dto';
 const moment = require('moment');
 
 const notFoundErr = (id: string): string => notFoundErrorMessage('Task', id);
@@ -108,9 +101,6 @@ export class TasksRepository extends Repository<Task> {
     query.leftJoinAndSelect('task.project', 'project');
     query.orderBy('task.created_at', 'DESC');
 
-    // .skip(5)
-    // .take(10)
-
     try {
       const count = await query.getCount();
       const tasks = await query.take(PAGINATION.itemsPerPage).getMany();
@@ -118,6 +108,74 @@ export class TasksRepository extends Repository<Task> {
     } catch (err) {
       this.logger.error(
         `Failed to get tasks for user "${
+          user.username
+        }". Filters: ${JSON.stringify(filterDto)}`,
+        err.stack,
+      );
+      ThrowError.internalServer();
+    }
+  }
+
+  createTaskQuery(user: User, filterDto: GetTasksFilterDto) {
+    const { start, end } = filterDto;
+    const query = this.createQueryBuilder('task');
+    query.where({ user });
+
+    if (start && end) {
+      query.andWhere('task.date BETWEEN :start AND :end', {
+        start: startDate,
+        end: endDate,
+      });
+    }
+
+    return query;
+  }
+
+  async getTasksSummary(
+    filterDto: GetTasksFilterDto,
+    user: User,
+  ): Promise<GetTasksSummaryDto> {
+    try {
+      const today = await this.createTaskQuery(user, filterDto)
+        .andWhere('(task.date >= :start AND task.date <= :end)', {
+          start: startDate,
+          end: endDate,
+        })
+        .getCount();
+      const due = await this.createTaskQuery(user, filterDto)
+        .andWhere(
+          '(task.date < :date AND (task.status = :status1 OR task.status = :status2))',
+          {
+            date: startDate,
+            status1: 'IN_PROGRESS',
+            status2: 'OPEN',
+          },
+        )
+        .getCount();
+      const upcoming = await this.createTaskQuery(user, filterDto)
+        .andWhere('task.date > :date', {
+          date: endDate,
+        })
+        .getCount();
+      const open = await this.createTaskQuery(user, filterDto)
+        .andWhere('task.status = :status', {
+          status: 'OPEN',
+        })
+        .getCount();
+      const inProgress = await this.createTaskQuery(user, filterDto)
+        .andWhere('task.status = :status', {
+          status: 'IN_PROGRESS',
+        })
+        .getCount();
+      const completed = await this.createTaskQuery(user, filterDto)
+        .andWhere('task.status = :status', {
+          status: 'DONE',
+        })
+        .getCount();
+      return { today, due, upcoming, open, inProgress, completed };
+    } catch (err) {
+      this.logger.error(
+        `Failed to get tasks summary for user "${
           user.username
         }". Filters: ${JSON.stringify(filterDto)}`,
         err.stack,

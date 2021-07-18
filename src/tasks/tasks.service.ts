@@ -10,6 +10,7 @@ import { ProjectsService } from 'src/projects/projects.service';
 import { LabelsService } from 'src/labels/labels.service';
 import { UpdateTaskStatusDto } from './dto/update-task-status-dto';
 import { RescheduleTaskDto } from './dto/reschedule-task-dto';
+import { GetTasksSummaryDto } from './dto/get-tasks-summary.dto';
 
 @Injectable()
 export class TasksService {
@@ -26,6 +27,13 @@ export class TasksService {
     user: User,
   ): Promise<{ tasks: Task[]; count: number }> {
     return this.tasksRepository.getTasks(filterDto, user);
+  }
+
+  getTasksSummary(
+    filterDto: GetTasksFilterDto,
+    user: User,
+  ): Promise<GetTasksSummaryDto> {
+    return this.tasksRepository.getTasksSummary(filterDto, user);
   }
 
   async getTaskById(id: string, user: User): Promise<Task> {

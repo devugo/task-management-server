@@ -19,6 +19,7 @@ import { TasksService } from './tasks.service';
 import { Logger } from '@nestjs/common';
 import { UpdateTaskStatusDto } from './dto/update-task-status-dto';
 import { RescheduleTaskDto } from './dto/reschedule-task-dto';
+import { GetTasksSummaryDto } from './dto/get-tasks-summary.dto';
 
 @Controller('tasks')
 @UseGuards(AuthGuard())
@@ -39,7 +40,20 @@ export class TasksController {
     return this.tasksService.getTasks(filterDto, user);
   }
 
-  @Get('/:id/one')
+  @Get('/summary')
+  getTasksSummary(
+    @Query() filterDto: GetTasksFilterDto,
+    @GetUser() user: User,
+  ): Promise<GetTasksSummaryDto> {
+    this.logger.verbose(
+      `User "${
+        user.username
+      }" retrieving tasks summary. Filters: ${JSON.stringify(filterDto)}`,
+    );
+    return this.tasksService.getTasksSummary(filterDto, user);
+  }
+
+  @Get('/:id')
   getTaskById(@Param('id') id: string, @GetUser() user: User): Promise<Task> {
     return this.tasksService.getTaskById(id, user);
   }
