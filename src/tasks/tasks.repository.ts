@@ -17,6 +17,7 @@ import { ERROR_CODE } from '../constants/error-code';
 import { notFoundErrorMessage } from '../helpers/classes/get-error-message';
 import { UpdateTaskStatusDto } from './dto/update-task-status-dto';
 import { RescheduleTaskDto } from './dto/reschedule-task-dto';
+import { PAGINATION } from 'src/constants/pagination';
 const moment = require('moment');
 
 const notFoundErr = (id: string): string => notFoundErrorMessage('Task', id);
@@ -28,8 +29,11 @@ const endDate = `${dateWithoutTime} 23:59:59`;
 @EntityRepository(Task)
 export class TasksRepository extends Repository<Task> {
   private logger = new Logger('TasksRepository', true);
-  async getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
-    const { type, status, search, start, end, project, level, label } =
+  async getTasks(
+    filterDto: GetTasksFilterDto,
+    user: User,
+  ): Promise<{ tasks: Task[]; count: number }> {
+    const { type, status, search, start, end, project, level, label, page } =
       filterDto;
     const query = this.createQueryBuilder('task');
     query.where({ user });
@@ -96,13 +100,21 @@ export class TasksRepository extends Repository<Task> {
       );
     }
 
+    if (page) {
+      query.skip(PAGINATION.itemsPerPage * (parseInt(page) - 1));
+    }
+
     query.leftJoinAndSelect('task.level', 'level');
     query.leftJoinAndSelect('task.project', 'project');
     query.orderBy('task.created_at', 'DESC');
 
+    // .skip(5)
+    // .take(10)
+
     try {
-      const tasks = await query.getMany();
-      return tasks;
+      const count = await query.getCount();
+      const tasks = await query.take(PAGINATION.itemsPerPage).getMany();
+      return { tasks, count };
     } catch (err) {
       this.logger.error(
         `Failed to get tasks for user "${

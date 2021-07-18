@@ -30,7 +30,7 @@ export class TasksController {
   getTasks(
     @Query() filterDto: GetTasksFilterDto,
     @GetUser() user: User,
-  ): Promise<Task[]> {
+  ): Promise<{ tasks: Task[]; count: number }> {
     this.logger.verbose(
       `User "${user.username}" retrieving all tasks. Filters: ${JSON.stringify(
         filterDto,

@@ -21,7 +21,10 @@ export class TasksService {
     private labelsService: LabelsService,
   ) {}
 
-  getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
+  getTasks(
+    filterDto: GetTasksFilterDto,
+    user: User,
+  ): Promise<{ tasks: Task[]; count: number }> {
     return this.tasksRepository.getTasks(filterDto, user);
   }
 

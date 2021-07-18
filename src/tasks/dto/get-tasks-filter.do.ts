@@ -33,4 +33,8 @@ export class GetTasksFilterDto {
   @IsOptional()
   @IsString()
   level?: string;
+
+  @IsOptional()
+  @IsString()
+  page?: string;
 }
