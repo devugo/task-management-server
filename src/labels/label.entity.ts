@@ -23,9 +23,11 @@ export class Label {
   color: string;
 
   @CreateDateColumn()
+  @Exclude()
   created_at: Date;
 
   @UpdateDateColumn()
+  @Exclude()
   updated_at: Date;
 
   @ManyToOne((_type) => User, (user) => user.labels, { eager: false })

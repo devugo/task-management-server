@@ -26,9 +26,11 @@ export class Project {
   color: string;
 
   @CreateDateColumn()
+  @Exclude()
   created_at: Date;
 
   @UpdateDateColumn()
+  @Exclude()
   updated_at: Date;
 
   @OneToMany((_type) => Task, (task) => task.project, { eager: true })

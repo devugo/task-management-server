@@ -11,8 +11,8 @@ import { LevelsModule } from './levels/levels.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: [`.env.stage.${process.env.STAGE}`],
-      // envFilePath: [`.env.stage.${'dev'}`],
+      // envFilePath: [`.env.stage.${process.env.STAGE}`],
+      envFilePath: [`.env.stage.${'dev'}`],
       validationSchema: configValidationSchema,
     }),
     TasksModule,
