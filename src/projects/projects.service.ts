@@ -13,7 +13,10 @@ export class ProjectsService {
     private projectsRepository: ProjectsRepository,
   ) {}
 
-  getProjects(filterDto: GetProjectsFilterDto, user: User): Promise<Project[]> {
+  async getProjects(
+    filterDto: GetProjectsFilterDto,
+    user: User,
+  ): Promise<Project[]> {
     return this.projectsRepository.getProjects(filterDto, user);
   }
 

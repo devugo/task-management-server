@@ -7,12 +7,13 @@ import { configValidationSchema } from './config.schema';
 import { LabelsModule } from './labels/labels.module';
 import { ProjectsModule } from './projects/projects.module';
 import { LevelsModule } from './levels/levels.module';
+import { CustomModule } from './custom/custom.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      // envFilePath: [`.env.stage.${process.env.STAGE}`],
-      envFilePath: [`.env.stage.${'dev'}`],
+      envFilePath: [`.env.stage.${process.env.STAGE}`],
+      // envFilePath: [`.env.stage.${'dev'}`],
       validationSchema: configValidationSchema,
     }),
     TasksModule,
@@ -42,6 +43,7 @@ import { LevelsModule } from './levels/levels.module';
     LabelsModule,
     ProjectsModule,
     LevelsModule,
+    CustomModule,
   ],
 })
 export class AppModule {}

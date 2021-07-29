@@ -13,7 +13,7 @@ export class LabelsService {
     private labelsRepository: LabelsRepository,
   ) {}
 
-  getLabels(filterDto: GetLabelsFilterDto, user: User): Promise<Label[]> {
+  async getLabels(filterDto: GetLabelsFilterDto, user: User): Promise<Label[]> {
     return this.labelsRepository.getLabels(filterDto, user);
   }
 

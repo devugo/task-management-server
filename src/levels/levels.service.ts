@@ -10,7 +10,7 @@ export class LevelsService {
     private levelsRepository: LevelsRepository,
   ) {}
 
-  getLevels(): Promise<Level[]> {
+  async getLevels(): Promise<Level[]> {
     return this.levelsRepository.getLevels();
   }
 
