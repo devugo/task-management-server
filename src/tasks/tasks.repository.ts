@@ -144,10 +144,9 @@ export class TasksRepository extends Repository<Task> {
       //   })
       //   .getQuery();
       const today = await this.entityManager.query(
-        'SELECT COUNT(id) FROM task WHERE task.date >= $1 AND task.date <= $2',
-        [startDate, endDate],
+        'SELECT COUNT(id) FROM task WHERE task.date >= $1 AND task.date <= $2 AND task."userId" = $3',
+        [startDate, endDate, user.id],
       );
-      // console.log({ today2 });
       // const today = await this.createTaskQuery(user, filterDto)
       //   .andWhere('(task.date >= :start AND task.date <= :end)', {
       //     start: startDate,
@@ -156,8 +155,8 @@ export class TasksRepository extends Repository<Task> {
       //   .getCount();
 
       const due = await this.entityManager.query(
-        'SELECT COUNT(id) FROM task WHERE (task.date < $1 AND (task.status = $2 OR task.status = $3))',
-        [startDate, 'IN_PROGRESS', 'OPEN'],
+        'SELECT COUNT(id) FROM task WHERE (task.date < $1 AND (task.status = $2 OR task.status = $3) AND task."userId" = $4)',
+        [startDate, 'IN_PROGRESS', 'OPEN', user.id],
       );
       // const due = await this.createTaskQuery(user, filterDto)
       //   .andWhere(
@@ -171,8 +170,8 @@ export class TasksRepository extends Repository<Task> {
       //   .getCount();
 
       const upcoming = await this.entityManager.query(
-        'SELECT COUNT(id) FROM task WHERE task.date > $1',
-        [endDate],
+        'SELECT COUNT(id) FROM task WHERE task.date > $1 AND task."userId" = $2',
+        [endDate, user.id],
       );
 
       // const upcoming = await this.createTaskQuery(user, filterDto)
@@ -182,8 +181,8 @@ export class TasksRepository extends Repository<Task> {
       //   .getCount();
 
       const open = await this.entityManager.query(
-        'SELECT COUNT(id) FROM task WHERE task.status = $1',
-        ['OPEN'],
+        'SELECT COUNT(id) FROM task WHERE task.status = $1 AND task."userId" = $2',
+        ['OPEN', user.id],
       );
       // const open = await this.createTaskQuery(user, filterDto)
       //   .andWhere('task.status = :status', {
@@ -192,8 +191,8 @@ export class TasksRepository extends Repository<Task> {
       //   .getCount();
 
       const inProgress = await this.entityManager.query(
-        'SELECT COUNT(id) FROM task WHERE task.status = $1',
-        ['IN_PROGRESS'],
+        'SELECT COUNT(id) FROM task WHERE task.status = $1 AND task."userId" = $2',
+        ['IN_PROGRESS', user.id],
       );
 
       // const inProgress = await this.createTaskQuery(user, filterDto)
@@ -203,8 +202,8 @@ export class TasksRepository extends Repository<Task> {
       //   .getCount();
 
       const completed = await this.entityManager.query(
-        'SELECT COUNT(id) FROM task WHERE task.status = $1',
-        ['DONE'],
+        'SELECT COUNT(id) FROM task WHERE task.status = $1 AND task."userId" = $2',
+        ['DONE', user.id],
       );
       // const completed = await this.createTaskQuery(user, filterDto)
       //   .andWhere('task.status = :status', {
