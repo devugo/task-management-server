@@ -10,7 +10,6 @@ import { notFoundErrorMessage } from '../helpers/classes/get-error-message';
 import { UpdateTaskStatusDto } from './dto/update-task-status-dto';
 import { RescheduleTaskDto } from './dto/reschedule-task-dto';
 import { PAGINATION } from 'src/constants/pagination';
-import { GetTasksSummaryDto } from './dto/get-tasks-summary.dto';
 const moment = require('moment');
 
 const notFoundErr = (id: string): string => notFoundErrorMessage('Task', id);
@@ -117,100 +116,41 @@ export class TasksRepository extends Repository<Task> {
     }
   }
 
-  createTaskQuery(user: User, filterDto: GetTasksFilterDto) {
-    const { start, end } = filterDto;
-    const query = this.createQueryBuilder('task');
-    query.where({ user });
-
-    if (start && end) {
-      query.andWhere('task.date BETWEEN :start AND :end', {
-        start: startDate,
-        end: endDate,
-      });
-    }
-
-    return query;
-  }
-
   async getTasksSummary(
     filterDto: GetTasksFilterDto,
     user: User,
   ): Promise<any> {
     try {
-      // const ests = await this.createTaskQuery(user, filterDto)
-      //   .andWhere('(task.date >= :start AND task.date <= :end)', {
-      //     start: startDate,
-      //     end: endDate,
-      //   })
-      //   .getQuery();
       const today = await this.entityManager.query(
         'SELECT COUNT(id) FROM task WHERE task.date >= $1 AND task.date <= $2 AND task."userId" = $3',
         [startDate, endDate, user.id],
       );
-      // const today = await this.createTaskQuery(user, filterDto)
-      //   .andWhere('(task.date >= :start AND task.date <= :end)', {
-      //     start: startDate,
-      //     end: endDate,
-      //   })
-      //   .getCount();
 
       const due = await this.entityManager.query(
         'SELECT COUNT(id) FROM task WHERE (task.date < $1 AND (task.status = $2 OR task.status = $3) AND task."userId" = $4)',
         [startDate, 'IN_PROGRESS', 'OPEN', user.id],
       );
-      // const due = await this.createTaskQuery(user, filterDto)
-      //   .andWhere(
-      //     '(task.date < :date AND (task.status = :status1 OR task.status = :status2))',
-      //     {
-      //       date: startDate,
-      //       status1: 'IN_PROGRESS',
-      //       status2: 'OPEN',
-      //     },
-      //   )
-      //   .getCount();
 
       const upcoming = await this.entityManager.query(
         'SELECT COUNT(id) FROM task WHERE task.date > $1 AND task."userId" = $2',
         [endDate, user.id],
       );
 
-      // const upcoming = await this.createTaskQuery(user, filterDto)
-      //   .andWhere('task.date > :date', {
-      //     date: endDate,
-      //   })
-      //   .getCount();
-
       const open = await this.entityManager.query(
         'SELECT COUNT(id) FROM task WHERE task.status = $1 AND task."userId" = $2',
         ['OPEN', user.id],
       );
-      // const open = await this.createTaskQuery(user, filterDto)
-      //   .andWhere('task.status = :status', {
-      //     status: 'OPEN',
-      //   })
-      //   .getCount();
 
       const inProgress = await this.entityManager.query(
         'SELECT COUNT(id) FROM task WHERE task.status = $1 AND task."userId" = $2',
         ['IN_PROGRESS', user.id],
       );
 
-      // const inProgress = await this.createTaskQuery(user, filterDto)
-      //   .andWhere('task.status = :status', {
-      //     status: 'IN_PROGRESS',
-      //   })
-      //   .getCount();
-
       const completed = await this.entityManager.query(
         'SELECT COUNT(id) FROM task WHERE task.status = $1 AND task."userId" = $2',
         ['DONE', user.id],
       );
-      // const completed = await this.createTaskQuery(user, filterDto)
-      //   .andWhere('task.status = :status', {
-      //     status: 'DONE',
-      //   })
-      //   .getCount();
-      // console.log({ today, due, upcoming, open, inProgress, completed });
+
       const countData = {
         today: today[0].count,
         due: due[0].count,
